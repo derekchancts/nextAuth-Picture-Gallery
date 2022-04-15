@@ -13,6 +13,9 @@ import {
   POST_DELETE_REQUEST,
   POST_DELETE_SUCCESS,
   POST_DELETE_FAIL,
+  // START_LOADING,
+  // REQUEST_LOADING,
+  // REQUEST_FINISHED,
 } from "./postTypes"
 
 
@@ -137,3 +140,53 @@ export const postDelete = (id) => async (dispatch) => {
     })
   }
 }
+
+
+
+export const postLike = (_id) => async (dispatch) => {
+  try {
+    dispatch({ type: POST_UPDATE_REQUEST })
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        // Authorization: `Bearer ${cookies.token}`,
+      },
+    }
+
+    const { data } = await axios.patch(
+      `/api/posts/${_id}`,
+      { },
+      config
+    )
+    // console.log(data)
+
+    dispatch({
+      type: POST_UPDATE_SUCCESS,
+      payload: data.updatedPost,
+    })
+  } catch (error) {
+    dispatch({
+      type: POST_UPDATE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+};
+
+
+
+
+// export const startLoading = () => async (dispatch) => {
+//   dispatch({ type: START_LOADING })
+// }
+
+// export const requestLoading = () => async (dispatch) => {
+//   dispatch({ type: REQUEST_LOADING, })
+// }
+
+// export const requestFinished = () => async (dispatch) => {
+//   dispatch({ type: REQUEST_FINISHED, })
+// }

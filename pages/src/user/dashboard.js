@@ -124,7 +124,7 @@ const Dashboard = () => {
 
 
         <Grid item xs={4}>
-          <Form post={postData} />  
+          <Form post={postData} setUpdatePost={setUpdatePost} />  
         </Grid>
 
       </Grid>

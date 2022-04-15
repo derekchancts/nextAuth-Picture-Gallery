@@ -12,7 +12,10 @@ const postSchema = mongoose.Schema({
   creater: {
     type: String,
   },
-  tags: [String],
+  tags: {
+    type: [String],
+    trim: true
+  },
   image: { type: String },
   likeCount: { type: Number, default: 0 },
   createdAt: {

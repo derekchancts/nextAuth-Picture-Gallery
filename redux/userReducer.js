@@ -17,11 +17,22 @@ const Initial_state = {
 export const profileReducer = (state = Initial_state, action) => {
   switch (action.type) {
     case LOAD_USER_REQUEST:
-      return { loading: true }
+      return { 
+        ...state,
+        loading: true
+       }
     case LOAD_USER_SUCCESS:
-      return { loading: false, dbUser: action.payload }
+      return { 
+        ...state,  
+        loading: false, 
+        dbUser: action.payload 
+      }
     case LOAD_USER_FAIL:
-      return { loading: false, error: action.payload }
+      return { 
+        ...state,
+        loading: false, 
+        error: action.payload 
+      }
     case LOGOUT_USER: 
       return { state: Initial_state }
     default:

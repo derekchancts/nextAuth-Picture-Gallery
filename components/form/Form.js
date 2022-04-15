@@ -23,10 +23,10 @@ import axios from 'axios';
 import { toast } from "react-toastify";
 
 import { createPosts, updatePost } from "../../redux/posts/postActions"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
 
-function Form({ post }) {
+function Form({ post, setUpdatePost }) {
   const [message, setMessage] = useState("")
   const [tags, setTags] = useState("")
   const [creater, setCreater] = useState("")
@@ -35,6 +35,8 @@ function Form({ post }) {
 
   const router = useRouter()
   const dispatch = useDispatch()
+  const postGet = useSelector((state) => state.postGet)
+  // console.log({postGet})
 
 
   function reset() {
@@ -52,6 +54,7 @@ function Form({ post }) {
       setTags(post.tags)
       setCreater(post.creater)
       setTitle(post.title)
+      // setSelectedFile(post.image)
     }
   }, [post])
 
@@ -84,6 +87,9 @@ function Form({ post }) {
       creater,
       title,
     }
+
+    // dispatch(startLoading())
+    
     // console.log({memoryData})
 
     // let config = {
@@ -99,13 +105,30 @@ function Form({ post }) {
 
     if (post) {
       // updatePost(post._id, memoryData)
-      dispatch(updatePost(post._id, memoryData))
-      toast.success("post updated")
-      memoryData = {}
-      reset();
-      // router.push('/src/user/profile');
+      dispatch(updatePost(post._id, memoryData))   // PROBLEM HERE AS LOADING IS UPDATED IN REDUX
+      // console.log({postGet})                       // BUT LOCAL STATE (POSTGET) NOT UPDATING IMMEDIATELY
+      // console.log(postGet.error, postGet.loading)   
+
+      if (postGet.error || postGet.error !== null) {
+        console.log(postGet.error)
+        // return toast.error(postGet.error)
+        return toast.error('failed to update post')
+      } 
+
+      if (postGet.error === null && !postGet.loading)  {
+        toast.success("post updated")
+        memoryData = {}
+        reset();
+        // router.push('/src/user/profile');
+      }
     } else {
       dispatch(createPosts(memoryData))
+      if (postGet.error || postGet.error !== null) {
+        console.log(postGet.error)
+        // return toast.error(postGet.error)
+        return toast.error('failed to create post')
+      }
+
       toast.success("post created")
       memoryData = {}
       reset();
@@ -138,8 +161,17 @@ function Form({ post }) {
           </Avatar>
 
           <Typography component="h1" variant="h5">
-            Memory Capture
+            Memory {post ? "Edit" : "Capture"}
           </Typography>
+
+          {post && (
+            <Button 
+              onClick={() => {
+                setUpdatePost("")
+                reset();
+              }}
+            >Clear</Button>
+          )}
 
           <Box
             component="form"
@@ -199,7 +231,7 @@ function Form({ post }) {
                   id="tags"
                   autoComplete="tags"
                   value={tags}
-                  onChange={(e) => setTags(e.target.value)}
+                  onChange={(e) => setTags(e.target.value.split(","))}
                 />
               </Grid>
 
@@ -229,7 +261,7 @@ function Form({ post }) {
               variant="contained"
               sx={{ mt: 2, mb: 2, backgroundColor: "secondary.main" }}
             >
-              Submit
+              { post ? "Edit" : "Submit" }
             </Button>
 
           </Box>

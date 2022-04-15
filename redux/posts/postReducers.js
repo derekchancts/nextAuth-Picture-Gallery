@@ -11,6 +11,9 @@ import {
   POST_DELETE_REQUEST,
   POST_DELETE_SUCCESS,
   POST_DELETE_FAIL,
+  // START_LOADING,
+  // REQUEST_LOADING,
+  // REQUEST_FINISHED,
 } from "./postTypes"
 
 
@@ -18,14 +21,15 @@ import {
 const posts_Initial_state = {
   posts: [],
   loading: false,
-  error: null
+  error: null,
+  // requestState: true
 }
 
-const post_Initial_state = {
-  post: null,
-  loading: false,
-  error: null
-}
+// const post_Initial_state = {
+//   post: null,
+//   loading: false,
+//   error: null
+// }
 
 
 export const postGetReducer = (state = posts_Initial_state, action) => {
@@ -73,11 +77,10 @@ export const postGetReducer = (state = posts_Initial_state, action) => {
       }
     case POST_UPDATE_SUCCESS:
       const remainingPosts = state.posts.filter(post => post._id !== action.payload._id) 
-
       return {
         ...state,
         loading: false, 
-        posts: [...remainingPosts, action.payload]    // could be wrong
+        posts: [...remainingPosts, action.payload]  
       }
     case POST_UPDATE_FAIL:
       return { 
@@ -103,6 +106,17 @@ export const postGetReducer = (state = posts_Initial_state, action) => {
         loading: false, 
         error: action.payload 
       }
+    
+    // case REQUEST_LOADING:
+    //   return {
+    //     ...state,
+    //     requestState: false, 
+    //   }
+    // case REQUEST_FINISHED:
+    //   return {
+    //     ...state,
+    //     requestState: true, 
+    //   }
     
     default:
       return state

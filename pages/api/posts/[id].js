@@ -2,6 +2,7 @@ import Post from "../../../model/postModel"
 
 
 export default async function handler (req, res) {
+  // console.log(req.method)
 
   if (req.method === "PUT") 
   {
@@ -18,9 +19,8 @@ export default async function handler (req, res) {
       // FIND POST
       const post = await Post.find({ _id: id })
 
-      if (!post) {
-        return res.status(404).send({ error: 'no post found' })
-      }
+      if (!post) return res.status(404).send({ error: 'no post found' })
+      
 
       // if (post) console.log(post)
 
@@ -35,9 +35,7 @@ export default async function handler (req, res) {
             creater,
             image,
           },
-          {
-            new: true,
-          }
+          { new: true }
         )
         // await updatedPost.save()  
 
@@ -50,11 +48,43 @@ export default async function handler (req, res) {
       }
 
     }
-  } 
+  };
   
 
 
-   if (req.method === "DELETE") {
+  if (req.method === "PATCH") 
+  // console.log(req.method)
+  {
+    const { id } = req.query;
+
+    // FIND POST
+    const post = await Post.find({ _id: id })
+    // console.log(post)
+    console.log(post[0].likeCount)
+
+    if (!post) return res.status(404).send({ error: 'no post found' })
+
+    try {
+      // UPDATE POST
+      const updatedPost = await Post.findByIdAndUpdate(
+        { _id: id },
+        { likeCount: post[0].likeCount + 1 },
+        { new: true }
+      )
+      // console.log(updatedPost)
+
+      return res.status(200).json({ success: 'post updated successfully', updatedPost })
+    } catch (err) {
+      console.log(err)
+      return res.status(409).json({ error: err.message })
+    }
+  } 
+
+
+
+
+
+  if (req.method === "DELETE") {
     // console.log(req.method)
     // console.log(req.user._id.toString())
 
@@ -78,7 +108,6 @@ export default async function handler (req, res) {
     } catch (err) {
       return res.status(409).json({ error: err.message })
     }
-    
-  }
+  };
 
 }
