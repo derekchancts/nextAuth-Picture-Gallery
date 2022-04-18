@@ -19,7 +19,8 @@ export const profileReducer = (state = Initial_state, action) => {
     case LOAD_USER_REQUEST:
       return { 
         ...state,
-        loading: true
+        loading: true,
+        error: null
        }
     case LOAD_USER_SUCCESS:
       return { 

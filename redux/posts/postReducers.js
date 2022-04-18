@@ -14,6 +14,9 @@ import {
   // START_LOADING,
   // REQUEST_LOADING,
   // REQUEST_FINISHED,
+  GET_PAGINATE_FAIL,
+  GET_PAGINATE_SUCCESS,
+  GET_PAGINATE_REQUEST,
 } from "./postTypes"
 
 
@@ -22,6 +25,7 @@ const posts_Initial_state = {
   posts: [],
   loading: false,
   error: null,
+  count: null
   // requestState: true
 }
 
@@ -37,7 +41,8 @@ export const postGetReducer = (state = posts_Initial_state, action) => {
     case GET_POSTS_REQUEST:
       return { 
         ...state,
-        loading: true 
+        loading: true,
+        error: null,
       }
     case GET_POSTS_SUCCESS:
       return { 
@@ -55,7 +60,8 @@ export const postGetReducer = (state = posts_Initial_state, action) => {
     case CREATE_POSTS_REQUEST:
       return {
         ...state,
-        loading: true 
+        loading: true,
+        error: null,
       }
     case CREATE_POSTS_SUCCESS:
       return {
@@ -73,7 +79,8 @@ export const postGetReducer = (state = posts_Initial_state, action) => {
     case POST_UPDATE_REQUEST:
       return {
         ...state,
-        loading: true 
+        loading: true,
+        error: null, 
       }
     case POST_UPDATE_SUCCESS:
       const remainingPosts = state.posts.filter(post => post._id !== action.payload._id) 
@@ -92,7 +99,8 @@ export const postGetReducer = (state = posts_Initial_state, action) => {
     case POST_DELETE_REQUEST:
       return { 
         ...state,
-        loading: true, 
+        loading: true,
+        error: null, 
       }
     case POST_DELETE_SUCCESS:
       return { 
@@ -117,7 +125,27 @@ export const postGetReducer = (state = posts_Initial_state, action) => {
     //     ...state,
     //     requestState: true, 
     //   }
-    
+
+    case GET_PAGINATE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      }
+    case GET_PAGINATE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        posts: action.payload.posts,
+        count: action.payload.count
+      }  
+    case GET_PAGINATE_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      }
+
     default:
       return state
   }

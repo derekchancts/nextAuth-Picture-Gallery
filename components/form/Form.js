@@ -115,7 +115,7 @@ function Form({ post, setUpdatePost }) {
         return toast.error('failed to update post')
       } 
 
-      if (postGet.error === null && !postGet.loading)  {
+      if (postGet.error === null && !postGet.loading) {
         toast.success("post updated")
         memoryData = {}
         reset();

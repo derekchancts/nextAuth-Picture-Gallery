@@ -19,7 +19,8 @@ export default async function handler(req, res) {
       // console.log(user)
 
       // const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {expiresIn: "30d",})
-      const token = jwt.sign({ _id: user._id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.JWT_ACCESS_TIME } )
+      // const token = jwt.sign({ _id: user._id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.JWT_ACCESS_TIME } )
+      const token = jwt.sign({ _id: user._id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '24h'  } )
 
       // console.log(token)
 

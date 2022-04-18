@@ -24,6 +24,8 @@ import { getPosts } from "../../../redux/posts/postActions"
 import { useDispatch, useSelector } from "react-redux"
 // import { wrapper } from "../../../redux/store"
 
+import AuthWrapper from '../../../components/auth/authWrapper'
+
 
 
 // const Dashboard = ({ session }) => {
@@ -59,12 +61,13 @@ const Dashboard = () => {
   const user = cookies?.user ? JSON.parse(cookies.user) : "" ;
 
 
-
+  // USING AUTHWRAPPER INSTEAD
   useEffect(() => {
     if(!session && !user) {
       router.push("/src/user/login")
     }
   }, []);
+
 
   // useEffect(() => {
   //   const getPosts = async () => {
@@ -87,8 +90,9 @@ const Dashboard = () => {
   }, [])
 
 
-
-  if (status !== "authenticated" && !user || loading) {
+  // USING AUTHWRAPPER INSTEAD
+  // if (status !== "authenticated" && !user || loading) {
+  if (loading) {
     // return <h2>Loading...</h2>;
     return (
     <>
@@ -113,21 +117,23 @@ const Dashboard = () => {
 
   return (
     <>
-      <Grid container maxWidth="lg" sx={{ mt: '1rem' }} >
+      <AuthWrapper>
+        <Grid container maxWidth="lg" sx={{ mt: '1rem' }} >
 
-        {/* <Grid item xs={8} sx={{ display: "flex", flexDirection: 'row', flexWrap: 'wrap'}} component={Card}> */}
-        <Grid item xs={8} sx={{ display: "flex", flexDirection: 'row', flexWrap: 'wrap'}}>
-          {posts && posts.map(post => (
-            <PostCard key={post._id} post={post} setUpdatePost={setUpdatePost} />
-          ))}
+          {/* <Grid item xs={8} sx={{ display: "flex", flexDirection: 'row', flexWrap: 'wrap'}} component={Card}> */}
+          <Grid item xs={8} sx={{ display: "flex", flexDirection: 'row', flexWrap: 'wrap'}}>
+            {posts && posts.map(post => (
+              <PostCard key={post._id} post={post} setUpdatePost={setUpdatePost} />
+            ))}
+          </Grid>
+
+
+          <Grid item xs={4}>
+            <Form post={postData} setUpdatePost={setUpdatePost} />  
+          </Grid>
+
         </Grid>
-
-
-        <Grid item xs={4}>
-          <Form post={postData} setUpdatePost={setUpdatePost} />  
-        </Grid>
-
-      </Grid>
+      </AuthWrapper>
     </>
   );
 

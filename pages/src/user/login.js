@@ -85,7 +85,8 @@ const Login = ({ session }) => {
           // icon: "🚀"
         })
 
-        router.push('/src/user/login');
+        // router.push('/src/user/login');
+        router.push('/')
       }
 
     } catch (err) {

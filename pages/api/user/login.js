@@ -31,7 +31,8 @@ export default async function handler(req, res) {
         }
 
         // const token = jwt.sign({ userid: user._id}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '3d' } )
-        const token = jwt.sign({ userid: user._id}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.JWT_ACCESS_TIME } )  // "seconds"
+        const token = jwt.sign({ userId: user._id}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '24h' } )
+        // const token = jwt.sign({ userid: user._id}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.JWT_ACCESS_TIME } )  // "seconds"
 
         // send this cookie named "jwt" back to the client
         // res.cookie('jwt', token, { httpOnly: true, maxAge: process.env.COOKIE_ACCESS_TIME });  // maxAge in milliseconds

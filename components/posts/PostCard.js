@@ -12,7 +12,7 @@ import {
   Card, CardActions, CardContent, CardMedia 
 } from "@mui/material";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import DeleteIcon from "@mui/icons-material/Delete"
 import EditIcon from "@mui/icons-material/Edit"
 
@@ -26,10 +26,14 @@ import { useRouter } from "next/router";
 
 const PostCard = ({ post, setUpdatePost }) => {
   const router = useRouter();
+  // console.log("router", router.pathname)
 
   const dispatch = useDispatch()
-  const postGet = useSelector((state) => state.postGet)
+  const postGet = useSelector(state => state.postGet)
   // console.log({postGet})
+
+  const profile = useSelector(state => state.profile)
+  const { loading, error, dbUser } = profile;
 
 
   const deletePost = async (id) => {
@@ -37,7 +41,9 @@ const PostCard = ({ post, setUpdatePost }) => {
     if (!answer) {
       return
     }
-    dispatch(postDelete(id))
+    dispatch(postDelete(id))     // PROBLEM HERE AS LOADING IS UPDATED IN REDUX
+    // console.log({postGet})    // BUT LOCAL STATE (POSTGET) NOT UPDATING IMMEDIATELY
+
 
     if (postGet.error) {
       console.log(postGet.error)
@@ -45,7 +51,13 @@ const PostCard = ({ post, setUpdatePost }) => {
       return toast.error('failed to delete post')
     }
 
-    toast.error("post deleted")
+    if (postGet.loading) {
+      return <h1>Loading...</h1>
+    } else {
+      toast.success("post deleted")
+    } 
+
+
 
     // router.push('/src/user/profile');  // NEED TO UPDATE THIS TO ROUTER.RELOAD() AFTER REDUX IS UPDATED
     // const config = {
@@ -75,28 +87,41 @@ const PostCard = ({ post, setUpdatePost }) => {
 
 
   const likePost = async (id) => {
-    try {
-      dispatch(postLike(id))
-    } catch (error) { 
-      console.log(error)
+    const hasLiked = post?.likes.includes(dbUser?._id)  // checks and see if the user is already liked the current post
+    // console.log({hasLiked})
+    if (!hasLiked) {
+      try {
+        dispatch(postLike(id))
+
+        if (postGet.error) {
+          console.log(postGet.error)
+          return toast.error(postGet.error)
+          // return toast.error('failed to delete post')
+        }
+    
+      } catch (error) { 
+        console.log(error)
+      }
+    } else {
+      toast.error('You already liked the post')
     }
   };
 
 
   return (
     <>
-    <Card sx={{ maxWidth: 230, maxHeight: 400, ml: '1rem', my: '1rem' }} >
+    <Card sx={{ maxWidth: 230, maxHeight: 440, ml: '1rem', my: '1rem' }} >
       <CardMedia
         component="img"
         height="140"
         image={post?.image}
         alt="green iguana"
       />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
+      <CardContent sx={{ minHeight: 210 }}>
+        <Typography gutterBottom variant="h4" component="div">
           {post?.title}
         </Typography>
-        <Typography gutterBottom variant="h7" component="div">
+        <Typography gutterBottom variant="h6" component="div">
           {post?.creater}
         </Typography>
 
@@ -113,7 +138,7 @@ const PostCard = ({ post, setUpdatePost }) => {
       </CardContent>
 
 
-      <CardActions sx={{ mt: '-1rem' }}>
+      <CardActions sx={{ }}>
         <Grid container >
           <Grid container>
             <Button 
@@ -121,7 +146,10 @@ const PostCard = ({ post, setUpdatePost }) => {
               onClick={() => likePost(post._id)} 
               >
                 Like
-                <ThumbUpIcon sx={{ ml: "0.25rem", mt: "-0.3rem" }}  />
+                { post?.likes.includes(dbUser?._id) ? 
+                  (<ThumbUpIcon sx={{ ml: "0.25rem", mt: "-0.3rem" }}/>) : 
+                  (<ThumbUpAltOutlinedIcon sx={{ ml: "0.25rem", mt: "-0.3rem" }} />) 
+                }
             </Button>
             <Typography 
               variant="body2" 
@@ -131,6 +159,7 @@ const PostCard = ({ post, setUpdatePost }) => {
             </Typography>
           </Grid>
           
+          {router.pathname === '/src/user/dashboard' && (
           <Grid container sx={{ display: 'flex', justifyContent: 'space-between'}}>
             <Button 
               size="small" 
@@ -146,6 +175,8 @@ const PostCard = ({ post, setUpdatePost }) => {
                 <EditIcon sx={{ ml: "0.25rem" }} />
               </Button>
           </Grid>
+          )}
+
         </Grid>
       </CardActions>
 

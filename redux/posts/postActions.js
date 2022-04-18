@@ -16,13 +16,22 @@ import {
   // START_LOADING,
   // REQUEST_LOADING,
   // REQUEST_FINISHED,
+  GET_PAGINATE_FAIL,
+  GET_PAGINATE_SUCCESS,
+  GET_PAGINATE_REQUEST,
 } from "./postTypes"
+
+import { parseCookies } from "nookies"
+
+
+const cookies = parseCookies();
 
 
 export const getPosts = () => async (dispatch) => {
   try {
     dispatch({ type: GET_POSTS_REQUEST })
 
+    // const { data } = await axios.get(`/api/posts`)
     const { data } = await axios.get(`/api/posts`)
     console.log("data", data)
 
@@ -45,15 +54,21 @@ export const getPosts = () => async (dispatch) => {
 
 
 export const createPosts = (memoryData) => async (dispatch) => {
+  // console.log(cookies)
+
   try {
     dispatch({ type: CREATE_POSTS_REQUEST })
 
-    const config = { 
-      headers: { "Content-Type": "application/json" }
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${cookies.token}`,
+      },
     }
 
+
     const { data } = await axios.post(
-      `/api/posts`,
+      `/api/posts/create`,
       { memoryData },
       config
     )
@@ -75,19 +90,19 @@ export const createPosts = (memoryData) => async (dispatch) => {
 
 
 
-export const updatePost = (_id, memoryData) => async (dispatch) => {
+export const updatePost = (id, memoryData) => async (dispatch) => {
   try {
     dispatch({ type: POST_UPDATE_REQUEST })
 
     const config = {
       headers: {
         "Content-Type": "application/json",
-        // Authorization: `Bearer ${cookies.token}`,
+        Authorization: `Bearer ${cookies.token}`,
       },
     }
 
     const { data } = await axios.put(
-      `/api/posts/${_id}`,
+      `/api/posts/${id}`,
       { memoryData },
       config
     )
@@ -117,13 +132,12 @@ export const postDelete = (id) => async (dispatch) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
-        // Authorization: `Bearer ${cookies.token}`,
+        Authorization: `Bearer ${cookies.token}`,
       },
     }
 
-    // const { data } = await axios.delete(`/api/posts/${id}`, config)
-
-    const { data } = await axios.delete(`/api/posts/${id}` )
+    const { data } = await axios.delete(`/api/posts/${id}`, config)
+    // const { data } = await axios.delete(`/api/posts/${id}` )
     // console.log(data)
 
     dispatch({
@@ -143,19 +157,20 @@ export const postDelete = (id) => async (dispatch) => {
 
 
 
-export const postLike = (_id) => async (dispatch) => {
+export const postLike = (id) => async (dispatch) => {
   try {
     dispatch({ type: POST_UPDATE_REQUEST })
 
+    // console.log('action', cookies.token)
     const config = {
       headers: {
         "Content-Type": "application/json",
-        // Authorization: `Bearer ${cookies.token}`,
+        Authorization: `Bearer ${cookies.token}`,
       },
     }
 
     const { data } = await axios.patch(
-      `/api/posts/${_id}`,
+      `/api/posts/${id}`,
       { },
       config
     )
@@ -190,3 +205,38 @@ export const postLike = (_id) => async (dispatch) => {
 // export const requestFinished = () => async (dispatch) => {
 //   dispatch({ type: REQUEST_FINISHED, })
 // }
+
+
+
+export const paginatePosts = (number) => async (dispatch) => {
+  try {
+    dispatch({ type: GET_PAGINATE_REQUEST })
+
+    const { data } = await axios.get(`/api/posts/paginate/${number}`)
+    console.log(data)
+
+    dispatch({
+      type: GET_PAGINATE_SUCCESS,
+      payload: data,
+    })
+  } catch (error) {
+    dispatch({
+      type: GET_PAGINATE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+}
+
+
+
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '5mb',
+    },
+  },
+}

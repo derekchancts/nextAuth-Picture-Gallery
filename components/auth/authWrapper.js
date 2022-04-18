@@ -11,8 +11,8 @@ const AuthWrapper = ({ children }) => {
   const router = useRouter()
   const { data: session, status } = useSession()
 
-  console.log({session})
-  console.log({status})
+  // console.log({session})
+  // console.log({status})
 
   const user = cookies?.user
     ? JSON.parse(cookies.user)
@@ -20,7 +20,7 @@ const AuthWrapper = ({ children }) => {
     ? session?.user
     : ""
 
-  console.log({user})
+  // console.log({user})
 
   useEffect(() => {
     if (!user) {
