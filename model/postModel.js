@@ -18,9 +18,17 @@ const postSchema = mongoose.Schema({
     type: [String],
     trim: true
   },
-  image: { type: String },
-  likeCount: { type: Number, default: 0 },
-  likes: { type: [String], default: [] },
+  image: { 
+    type: String 
+  },
+  likeCount: { 
+    type: Number, 
+    default: 0 
+  },
+  likes: { 
+    type: [String], 
+    default: [] 
+  },
   createdAt: {
     type: Date,
     default: new Date(),

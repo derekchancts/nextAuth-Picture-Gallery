@@ -123,6 +123,7 @@ const Authenticated = (component) => async (req, res) => {
     // console.log(decoded.userid)
     
     // const user = await User.findById({ _id: decoded?.userid }).exec()
+    // const user = await User.findById({ _id: decoded?.userId }).select('-password')  // without the password
     const user = await User.findById({ _id: decoded?.userId })
     // console.log(user)
     
