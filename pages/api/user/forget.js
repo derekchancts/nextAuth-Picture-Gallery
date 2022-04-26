@@ -4,8 +4,22 @@ import absoluteUrl from "next-absolute-url"
 import { sendEmail } from "../../../helpers/sendMail"
 import { sendGrid } from '../../../helpers/sendGrid'
 
+import Cors from 'cors'
+import initMiddleware from '../../../lib/init-middleware'
+
+
+// Initialize the cors middleware
+const cors = initMiddleware(
+  // You can read more about the available options here: https://github.com/expressjs/cors#configuration-options
+  Cors({
+    // Only allow requests with GET, POST and OPTIONS
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  })
+)
+
 
 export default async function handler(req, res) {
+  await cors(req, res)
   // console.log(req.body)
 
   try {

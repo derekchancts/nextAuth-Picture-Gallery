@@ -3,8 +3,25 @@ import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import absoluteUrl from "next-absolute-url"
 
+import Cors from 'cors'
+import initMiddleware from '../../../../lib/init-middleware'
+
+
+// Initialize the cors middleware
+const cors = initMiddleware(
+  // You can read more about the available options here: https://github.com/expressjs/cors#configuration-options
+  Cors({
+    // Only allow requests with GET, POST and OPTIONS
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  })
+)
+
+
 
 export default async function handle (req, res) {
+  // Run cors
+  await cors(req, res)
+
   try {
     if (req.method === "PUT") {
       const { token } = req.query      

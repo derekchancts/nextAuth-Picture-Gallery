@@ -1,12 +1,27 @@
 import Post from "../../../model/postModel"
 import Authenticated from '../../../middleware/isAuth'
 
+import Cors from 'cors'
+import initMiddleware from '../../../lib/init-middleware'
+
+
+// Initialize the cors middleware
+const cors = initMiddleware(
+  // You can read more about the available options here: https://github.com/expressjs/cors#configuration-options
+  Cors({
+    // Only allow requests with GET, POST and OPTIONS
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  })
+)
+
 
 // export default async function handler (req, res) {
 // const handler = async (req, res) => {
 const handler = Authenticated(async (req, res) => {
-  // console.log(req.method)
+    // Run cors
+    await cors(req, res)
 
+  // console.log(req.method)
 
   if (req.method === "PUT") {
     // console.log(req.user)
